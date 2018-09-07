@@ -1,17 +1,12 @@
-/*
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
-
- */
+const regex = {
+    "lorem"         : "lorem-ipsum",
+    "bold"          : "/* todo */",
+    "italic"        : "/* todo */",
+    "underscore"    : "/* todo */",
+    "interlink"     : "/* todo */",
+    "outerlink"     : "/* todo */",
+    "header"        : "/* todo */"
+};
 
 function initialize () {
 
@@ -28,7 +23,9 @@ function initialize () {
 
 
     // create body
-    $("<div></div>").text(replaceByRule(initText, "lorem")).appendTo("body");
+    var processed = replaceByRule(initText, regex["lorem"]);
+
+    $("<div></div>").text(processed).appendTo("body");
 
     // create footer
     $( "<div id='footer'></div>" ).appendTo( "body" );
@@ -39,11 +36,21 @@ function replaceByRule(text, regex) {
 
     var replacedText = text;
 
-    if (regex = "lorem") {
+    if (regex === regex["lorem"]) {
         replacedText = text+"lorem_ipsum"+text+"lorem_ipsum"+text+"lorem_ipsum"+text+"lorem_ipsum";
     }
 
     return replacedText;
+}
+
+function createHead(title) {
+    var htmlString =
+        "<head>\n" +
+        "    <meta charset=\"UTF-8\">\n" +
+        "    <title>"+title+"</title>\n" +
+        "</head>";
+
+    $(htmlString).appendTo(/* I have no idea, don't even try yet */);
 }
 
 // start
