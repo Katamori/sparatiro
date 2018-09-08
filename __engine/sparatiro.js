@@ -1,8 +1,13 @@
+
+// may help: https://gist.github.com/jbroadway/2836900
 const acceptedBodyCharacters = "a-zA-Z0-9 ,.;\<\>='\"!";
 const regex = {
     "lorem": [ 
         "lorem-ipsum", 
         "aaaaaaaaaaaaaaaaa" ],
+    "quote": [
+        "> ([" + acceptedBodyCharacters + "]*)",
+        "<blockquote>$1</blockquote><br>" ],
     "bold": [ 
         "[_*]{2}([" + acceptedBodyCharacters + "]*)[_*]{2}", 
         "<b>$1</b>" ],
@@ -30,6 +35,9 @@ const regex = {
     "newline": [
         "(?:\r\n|\r|\n)",
         "<br>" ],
+    "quoteMerge": [
+        "</blockquote><br><br><blockquote>",
+        "<br>" ],
 };
 
 /**
@@ -45,20 +53,24 @@ function initialize () {
     bodyDom.text("");
 
     // create header
-    createHead("indeksz pont hateemel");
+    createHead();
 
     bodyDom.append( "<div id='header'></div>" );
-    $("#header").load('./engine/header.html');
+    $("#header").load(getUrlRoot() + '__engine/header.html');
 
 
     // create body
     var processed = replaceByRule(initText);
 
-    bodyDom.append(processed);
+    bodyDom.append(
+        "<div id='content'>" +
+        "<h1 id='title'>" + getPageTitle() + "</h1>" + 
+        processed + 
+        "</div>");
 
     // create footer
     bodyDom.append( "<div id='footer'></div>" );
-    $('#footer').load('./engine/footer.html');
+    $('#footer').load(getUrlRoot() + '__engine/footer.html');
 }
 
 /**
@@ -70,26 +82,55 @@ function replaceByRule(text) {
     var replacedText = text;
 
     $.each(regex, (key, value) => {
-        console.log(new RegExp(value[0], "g"));
         replacedText = replacedText.replace(new RegExp(value[0], "g"), value[1])
     });
-    console.log(replacedText);
+
     return replacedText;
 }
 
 /**
  * 
- * @param {*} title 
  */
-function createHead(title) {
+function createHead() {
+
+    var title = getPageTitle() + " | Sparatiro";
+
     var htmlString =
         "<meta charset=\"UTF-8\">\n" +
         "<title>"+title+"</title>\n" +
-        "<link rel='stylesheet' type='text/css' href='theme.css'>";
+        "<link rel='stylesheet' type='text/css' href='./__engine/design/default.css'>";
 
     $("head").append(htmlString);
+}
 
-    $(htmlString).appendTo(/* I have no idea, don't even try yet */);
+/**
+ * 
+ */
+function getUrlRoot()
+{
+    var getUrl = window.location;
+    var baseUrl = 
+        getUrl.protocol + "//" + 
+        getUrl.host     + "/" + 
+        getUrl.pathname.split('/')[1] + "/";
+
+    return baseUrl.toString();
+}
+
+/**
+ * 
+ */
+function getPageTitle() {
+    
+    var properTitle = 
+        window.location.toString()
+            .replace(getUrlRoot(), "")
+            .replace("_", " ")
+            .replace("~", " / ")
+            .replace(".html", "");
+    
+    // uppercase
+    return properTitle[0].toUpperCase() + properTitle.slice(1);
 }
 
 // start
