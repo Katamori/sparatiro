@@ -1,13 +1,40 @@
+const acceptedBodyCharacters = "a-zA-Z0-9 ,.;\<\>='\"!";
 const regex = {
-    "lorem"         : "lorem-ipsum",
-    "bold"          : "/* todo */",
-    "italic"        : "/* todo */",
-    "underscore"    : "/* todo */",
-    "interlink"     : "/* todo */",
-    "outerlink"     : "/* todo */",
-    "header"        : "/* todo */"
+    "lorem": [ 
+        "lorem-ipsum", 
+        "aaaaaaaaaaaaaaaaa" ],
+    "bold": [ 
+        "[_*]{2}([" + acceptedBodyCharacters + "]*)[_*]{2}", 
+        "<b>$1</b>" ],
+    "italic": [ 
+        "[_*]{1}([" + acceptedBodyCharacters + "]*)[_*]{1}", 
+        "<i>$1</i>" ],
+    "underscore": [ 
+        "/* todo */", 
+        "/* todo */" ],
+    "strikethrough": [ 
+        "/* todo */", 
+        "/* todo */" ],
+    "interlink": [ 
+        "/* todo */", 
+        "/* todo */" ],
+    "outerlink": [ 
+        "/* todo */", 
+        "/* todo */" ],
+    "list": [ 
+        "/* todo */", 
+        "/* todo */" ],
+    "header": [ 
+        "([#]{1,6}) ([" + acceptedBodyCharacters + "]*)",
+        (p1, p2, p3) => `<h${p2.length}>${p3}</h${p2.length}>` ],
+    "newline": [
+        "(?:\r\n|\r|\n)",
+        "<br>" ],
 };
 
+/**
+ * 
+ */
 function initialize () {
 
     // save init text
@@ -18,37 +45,49 @@ function initialize () {
     bodyDom.text("");
 
     // create header
-    $( "<div id='header'></div>" ).appendTo( "body" );
-    $("#header").load('/engine/header.html');
+    createHead("indeksz pont hateemel");
+
+    bodyDom.append( "<div id='header'></div>" );
+    $("#header").load('./engine/header.html');
 
 
     // create body
-    var processed = replaceByRule(initText, regex["lorem"]);
+    var processed = replaceByRule(initText);
 
-    $("<div></div>").text(processed).appendTo("body");
+    bodyDom.append(processed);
 
     // create footer
-    $( "<div id='footer'></div>" ).appendTo( "body" );
-    $('#footer').load('/engine/footer.html');
+    bodyDom.append( "<div id='footer'></div>" );
+    $('#footer').load('./engine/footer.html');
 }
 
-function replaceByRule(text, regex) {
+/**
+ * 
+ * @param {*} text 
+ */
+function replaceByRule(text) {
 
     var replacedText = text;
 
-    if (regex === regex["lorem"]) {
-        replacedText = text+"lorem_ipsum"+text+"lorem_ipsum"+text+"lorem_ipsum"+text+"lorem_ipsum";
-    }
-
+    $.each(regex, (key, value) => {
+        console.log(new RegExp(value[0], "g"));
+        replacedText = replacedText.replace(new RegExp(value[0], "g"), value[1])
+    });
+    console.log(replacedText);
     return replacedText;
 }
 
+/**
+ * 
+ * @param {*} title 
+ */
 function createHead(title) {
     var htmlString =
-        "<head>\n" +
-        "    <meta charset=\"UTF-8\">\n" +
-        "    <title>"+title+"</title>\n" +
-        "</head>";
+        "<meta charset=\"UTF-8\">\n" +
+        "<title>"+title+"</title>\n" +
+        "<link rel='stylesheet' type='text/css' href='theme.css'>";
+
+    $("head").append(htmlString);
 
     $(htmlString).appendTo(/* I have no idea, don't even try yet */);
 }
