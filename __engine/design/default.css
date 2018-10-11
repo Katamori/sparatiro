@@ -6,3 +6,22 @@
 #title {
     border-bottom: solid 1px;
 }
+
+.header {
+    border-bottom: solid 1px;
+}
+
+.header ul,
+.header ul li {
+    margin: 0;
+    padding: 0;
+}
+.header ul {
+    list-style-type: none;
+    overflow: auto;
+}
+.header ul li {
+    float: left;
+    margin: 0 16px 0 16px;
+    text-align: center;
+}

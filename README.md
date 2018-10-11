@@ -11,12 +11,17 @@ __engine contains every underlying mechanics. Don't modify it if possible.
 
 ## Simple pages
 
-Create an HTML file, but instead of the regular tags, include only jQuery preferably 3.3.1) and `__engine/sparatiro.js`.
+Create an HTML file, but instead of the regular tags, include only `__engine/sparatiro.js`. Be aware that Sparatiro downloads jQuery on the fly.
 
 ## Namespaces
 
 Namespaces are defined in the title (that is, the filename) separated by `~`.
 
+## Development
+
+### Modules
+
+As of 2018-10-11, Sparatiro Modules are JS files containing functions used quite anywhere.
 
 # TO-DO
 
