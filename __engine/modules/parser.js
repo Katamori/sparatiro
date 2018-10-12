@@ -3,7 +3,8 @@
  */
 
 // may help: https://gist.github.com/jbroadway/2836900
-const acceptedBodyCharacters = "a-zA-Z0-9 ,.;\<\>='\"!";
+const acceptedBodyCharacters = "a-zA-Z0-9 ,.;\<\>='\"!-.\/";
+const acceptedUrlCharacters = "a-zA-Z0-9,.;\<\>='\"!-.\/";
 const regex = {
     "lorem": [ 
         "lorem-ipsum", 
@@ -23,15 +24,18 @@ const regex = {
     "strikethrough": [ 
         "/* todo */", 
         "/* todo */" ],
+    "outerlink": [
+        //todo 
+        "\\[([" + acceptedBodyCharacters + "]*)\\]\\(([:" + acceptedUrlCharacters + "]*)\\)", 
+        "<a href='$2'>$1</a>" ],
     "interlink": [ 
-        "/* todo */", 
-        "/* todo */" ],
-    "outerlink": [ 
-        "/* todo */", 
-        "/* todo */" ],
-    "list": [ 
-        "/* todo */", 
-        "/* todo */" ],
+        //todo; just simple interlink
+        "\\[([" + acceptedBodyCharacters + "]*)\\]", 
+        (p1, p2) => '<a href=\''+p2.replace(new RegExp(' ', 'g'), '_')+'\'>'+p2+'</a>' ],
+    "list": [
+        //todo: it's quite shitty so far
+        "(\\*|-|\\+) ([" + acceptedBodyCharacters + "]*)", 
+        "<li>$2</li>" ],
     "header": [ 
         "([#]{1,6}) ([" + acceptedBodyCharacters + "]*)",
         (p1, p2, p3) => `<h${p2.length}>${p3}</h${p2.length}>` ],

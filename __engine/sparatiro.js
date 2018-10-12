@@ -3,7 +3,7 @@
  */
 const conf = {
     "jqueryCDN":    'https://code.jquery.com/jquery-3.3.1.min.js',
-    "modulesRoot":  getUrlRoot() + '__engine/modules',
+    "modulesRoot":  '__engine/modules',
     "modules": {
         'parser':   '/parser.js',
     }
@@ -26,7 +26,7 @@ function includeJs(filename, onload) {
                 || script.readyState === 'loaded'
         )) {
             script.onreadystatechange = null;                                                  
-        }
+        }       
         onload();
     };
     document.getElementsByTagName('head')[0].appendChild(script);
@@ -34,8 +34,8 @@ function includeJs(filename, onload) {
 
 
 includeJs(conf.jqueryCDN, () => {
-
-    $(document).ready(includeJs(conf.modulesRoot + conf.modules.parser, initialize))
+    
+    $(document).ready(includeJs('./' + conf.modulesRoot + conf.modules.parser, initialize));  
 });
 
 /**

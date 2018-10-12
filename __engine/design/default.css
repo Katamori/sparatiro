@@ -11,6 +11,10 @@
     border-bottom: solid 1px;
 }
 
+.footer {
+    border-top: solid 1px;
+}
+
 .header ul,
 .header ul li {
     margin: 0;
