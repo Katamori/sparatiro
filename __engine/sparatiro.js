@@ -2,10 +2,14 @@
  * CONFIGURATION
  */
 const conf = {
-    "jqueryCDN":    'https://code.jquery.com/jquery-3.3.1.min.js',
+    // dependencies
+    "deps": {
+        "jquery":   './__engine/third-party/jquery-3.3.1/jquery-3.3.1.min.js',
+        "markdown": './__engine/third-party/markdown-browser-0.6.0-beta1/markdown.min.js',
+    },
     "modulesRoot":  '__engine/modules',
     "modules": {
-        'parser':   '/parser.js',
+
     }
 };
 
@@ -33,9 +37,8 @@ function includeJs(filename, onload) {
 }
 
 
-includeJs(conf.jqueryCDN, () => {
-    
-    $(document).ready(includeJs('./' + conf.modulesRoot + conf.modules.parser, initialize));  
+includeJs(conf.deps.jquery, () => {
+    $(document).ready(includeJs(conf.deps.markdown, initialize));  
 });
 
 /**
@@ -113,4 +116,15 @@ function getPageTitle() {
 
     // uppercase
     return properTitle[0].toUpperCase() + properTitle.slice(1);
+}
+
+/**
+ * 
+ * @param {*} text 
+ */
+function replaceByRule(text) {
+
+    var replacedText = text;
+
+    return markdown.toHTML(text);
 }
