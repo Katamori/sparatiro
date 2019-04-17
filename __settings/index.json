@@ -1,0 +1,10 @@
+{ "index": [
+    // regular articles
+    "index",
+    "template",
+    // namespace listing
+    "namespace~index",
+    // reserved
+    "wanted-pages",
+    "random-article"
+]}

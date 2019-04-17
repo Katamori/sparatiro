@@ -14,18 +14,25 @@ __engine contains every underlying mechanics. Don't modify it if possible.
 The engine contains the following third-party scripts:
 
 * [jQuery 3.3.1](https://jquery.com/) - compressed
-
 * [MarkdownJS by Dominic "evilstreak" Baggott](https://github.com/evilstreak/markdown-js) - browser build
 
-These are loaded on every article you visit.
+These are used on every article you visit.
 
 ## Simple pages
 
-Create an HTML file, but instead of the regular tags, include only `__engine/sparatiro.js`.
+Create an HTML file, but instead of the regular tags, include only `__engine/sparatiro.js` with a `script` tag.
 
 ## Namespaces
 
-Namespaces are defined in the title (that is, the filename) separated by `~`.
+Namespaces are defined in the title (that is, the filename) separated by the `~` delimiter.
+
+## Article index
+
+Since Sparatiro is backend-agnostic, the only way of implementing features involving search (e.g. wanted pages, content, what links here) is by maintaining a manual article index by yourself.
+
+The article index file is `__settings/index.json` and you can use it by simply listing them as in the example.
+
+For security and usability reasons, "unindexed" pages (HTML files with name not appearing in the index) won't be rendered by Sparatiro.
 
 ## Development
 
@@ -35,9 +42,18 @@ As of 2018-10-11, Sparatiro Modules are JS files containing functions used quite
 
 # TO-DO
 
-* Syntax handling
-    * Multimedia
-    * Fine-tune
+* article index implementation
+    * load from JSON
+    * interrupt init on unindexed articles
+    * colorize 404 URLs
+    * hardcode reserved names
+    * implement reserved names
+        * index display
+        * random
+        * wanted pages
+
+* config.json implementation
+    * load crucial data from it
 
 * A huge refactor on naming
 

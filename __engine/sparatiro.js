@@ -1,17 +1,17 @@
 /**
- * CONFIGURATION
+ * DEPENDENCIES
  */
+const deps = {
+    "jquery":   './__engine/third-party/jquery-3.3.1/jquery-3.3.1.min.js',
+    "markdown": './__engine/third-party/markdown-browser-0.6.0-beta1/markdown.min.js',
+};
+
 const conf = {
-    // dependencies
-    "deps": {
-        "jquery":   './__engine/third-party/jquery-3.3.1/jquery-3.3.1.min.js',
-        "markdown": './__engine/third-party/markdown-browser-0.6.0-beta1/markdown.min.js',
-    },
     "modulesRoot":  '__engine/modules',
     "modules": {
 
     }
-};
+}
 
 /**
  * Loads jQuery and configured dependencies.
@@ -37,8 +37,8 @@ function includeJs(filename, onload) {
 }
 
 
-includeJs(conf.deps.jquery, () => {
-    $(document).ready(includeJs(conf.deps.markdown, initialize));  
+includeJs(deps.jquery, () => {
+    $(document).ready(includeJs(deps.markdown, initialize));  
 });
 
 /**
@@ -52,26 +52,36 @@ function initialize () {
 
     // truncate body
     bodyDom.text("");
+    bodyDom.append("<div id='wrapper'></div>");
 
     // create header
     createHead();
 
-    bodyDom.append( "<div id='header'></div>" );
-    $("#header").load(getUrlRoot() + '__engine/header.html');
-
-
     // create body
     var processed = replaceByRule(initText);
 
-    bodyDom.append(
-        "<div id='content'>" +
-        "<h1 id='title'>" + getPageTitle() + "</h1>" + 
-        processed + 
+    $('#wrapper').append(
+        "<div id='main'><div class='inner'>" +
+                "<header id='header'>" +
+                    "<a href='#' class='logo'><strong>" + getPageTitle() + "</strong></a>"+
+                    "<ul class='icons'>"+
+                        "<li><a href='#' class='icon fa-twitter'><span class='label'>Twitter</span></a></li>" +
+                        "<li><a href='#' class='icon fa-facebook'><span class='label'>Facebook</span></a></li>" +
+                        "<li><a href='#' class='icon fa-snapchat-ghost'><span class='label'>Snapchat</span></a></li>" +
+                        "<li><a href='#' class='icon fa-instagram'><span class='label'>Instagram</span></a></li>" +
+                        "<li><a href='#' class='icon fa-medium'><span class='label'>Medium</span></a></li>" +
+                    "</ul>" +
+                "</header>" +
+            processed +
+            "</div>" +
         "</div>");
 
+    // create sidebar
+    $('#wrapper').append($("<div id='sidebar'>").load(getUrlRoot() + '__engine/sidebar.html'));
+
     // create footer
-    bodyDom.append( "<div id='footer'></div>" );
-    $('#footer').load(getUrlRoot() + '__engine/footer.html');
+    //$('#wrapper').append( "<div id='footer'></div>" );
+    //$('#footer').load(getUrlRoot() + '__engine/footer.html');
 }
 
 /**
@@ -84,7 +94,9 @@ function createHead() {
     var htmlString =
         "<meta charset=\"UTF-8\">\n" +
         "<title>"+title+"</title>\n" +
-        "<link rel='stylesheet' type='text/css' href='./__engine/design/default.css'>";
+        "<link rel='stylesheet' type='text/css' href='./__engine/design/default.css'>" +
+        // design necessities; yet to be automated
+        "<link rel='stylesheet' href='./__engine/design/editorial/assets/css/main.css' />";
 
     $("head").append(htmlString);
 }
