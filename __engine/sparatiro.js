@@ -7,6 +7,14 @@ const conf = {
         "jquery":   './__engine/third-party/jquery-3.3.1/jquery-3.3.1.min.js',
         "markdown": './__engine/third-party/markdown-browser-0.6.0-beta1/markdown.min.js',
     },
+    "html": {
+        "metadata": {
+            //"charset": "UTF-8",
+            "name": {
+                "author":  "Zoltán 'Katamori' Schmidt",
+            },
+        }
+    },
     "modulesRoot":  '__engine/modules',
     "modules": {
 
@@ -48,15 +56,15 @@ includeJs(conf.deps.jquery, () => {
  */
 function initialize()
 {
-    declareGlobalVariables();   // TODO: find a better way
-    createHead();               // create HTML head
-    createBody();               // create HTML body
+    declareComputedGlobals(); // TODO: find a better way
+    createHead();             // create HTML head
+    createBody();             // create HTML body
 }
 
 /**
- * declareGlobalVariables
+ * declareComputedGlobals
  */
-function declareGlobalVariables()
+function declareComputedGlobals()
 {
     bodyDom = $("body");
     initText = bodyDom.text();
@@ -67,12 +75,25 @@ function declareGlobalVariables()
  */
 function createHead()
 {
-    let title = getPageTitle() + " | Sparatiro";
+    let metatags = "";
+
+    // generate meta tags; source: https://stackoverflow.com/a/7242062/2320153
+    // It is worth noting, that "There is no way to stop or break a forEach() loop other than by throwing an exception
+    let meta = conf.html.metadata.name;
+
+    Object.keys(meta).forEach((key) => {
+        metatags += "<meta name=\"" + key + "\" content=\"" + meta[key] + "\">\n";
+    });
+
+    let title       = getPageTitle() + " | Sparatiro";
+
+    let titleTags   = "<title>"  +title + "</title>\n";
+    let cssLink     = "<link rel='stylesheet' type='text/css' href='./__engine/design/default.css'>";
 
     let htmlString =
-        "<meta charset=\"UTF-8\">\n" +
-        "<title>"  +title + "</title>\n" +
-        "<link rel='stylesheet' type='text/css' href='./__engine/design/default.css'>";
+        metatags
+        + titleTags
+        + cssLink;
 
     $("head").append(htmlString);
 }
