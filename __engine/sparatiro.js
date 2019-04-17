@@ -19,16 +19,18 @@ const conf = {
  * @param {*} filename 
  * @param {*} onload 
  */
-function includeJs(filename, onload) {
+function includeJs(filename, onload)
+{
     //source: https://stackoverflow.com/a/8139909/2320153
-    var script = document.createElement('script');
+    let script = document.createElement('script');
     script.src = filename;
     script.type = 'text/javascript';
     script.onload = script.onreadystatechange = function() {
         if (script.readyState 
             && (script.readyState === 'complete' 
                 || script.readyState === 'loaded'
-        )) {
+            )
+        ) {
             script.onreadystatechange = null;                                                  
         }       
         onload();
@@ -44,70 +46,87 @@ includeJs(conf.deps.jquery, () => {
 /**
  * 
  */
-function initialize () {
-
-    // save init text
-    var bodyDom = $("body");
-    var initText = bodyDom.text();
-
-    // truncate body
-    bodyDom.text("");
-
-    // create header
-    createHead();
-
-    bodyDom.append( "<div id='header'></div>" );
-    $("#header").load(getUrlRoot() + '__engine/header.html');
-
-
-    // create body
-    var processed = replaceByRule(initText);
-
-    bodyDom.append(
-        "<div id='content'>" +
-        "<h1 id='title'>" + getPageTitle() + "</h1>" + 
-        processed + 
-        "</div>");
-
-    // create footer
-    bodyDom.append( "<div id='footer'></div>" );
-    $('#footer').load(getUrlRoot() + '__engine/footer.html');
+function initialize()
+{
+    declareGlobalVariables();   // TODO: find a better way
+    createHead();               // create HTML head
+    createBody();               // create HTML body
 }
 
 /**
- * 
+ * declareGlobalVariables
  */
-function createHead() {
+function declareGlobalVariables()
+{
+    bodyDom = $("body");
+    initText = bodyDom.text();
+}
 
-    var title = getPageTitle() + " | Sparatiro";
+/**
+ * createHead
+ */
+function createHead()
+{
+    let title = getPageTitle() + " | Sparatiro";
 
-    var htmlString =
+    let htmlString =
         "<meta charset=\"UTF-8\">\n" +
-        "<title>"+title+"</title>\n" +
+        "<title>"  +title + "</title>\n" +
         "<link rel='stylesheet' type='text/css' href='./__engine/design/default.css'>";
 
     $("head").append(htmlString);
 }
 
 /**
- * 
+ * createBody
  */
-function getUrlRoot()
+function createBody()
 {
-    var getUrl = window.location;
-    var baseUrl = 
-        getUrl.protocol + "//" + 
-        getUrl.host     + "/";
+    bodyDom.text("");
 
-    return baseUrl.toString();
+    createArticleHeader();
+    createArticleContent();
+    createArticleFooter();
 }
 
 /**
- * 
+ * createArticleHeader
  */
-function getPageTitle() {
-    
-    var properTitle = 
+function createArticleHeader()
+{
+    bodyDom.append( "<div id='header'></div>" );
+    $("#header").load(getUrlRoot() + '__engine/header.html');
+}
+
+/**
+ * createArticleContent
+ */
+function createArticleContent()
+{
+    let formattedContent = markdown.toHTML(initText);
+
+    bodyDom.append(
+        "<div id='content'>" +
+        "<h1 id='title'>" + getPageTitle() + "</h1>" +
+        formattedContent +
+        "</div>");
+}
+
+/**
+ * createArticleFooter
+ */
+function createArticleFooter()
+{
+    bodyDom.append( "<div id='footer'></div>" );
+    $('#footer').load(getUrlRoot() + '__engine/footer.html');
+}
+
+/**
+ * getPageTitle
+ */
+function getPageTitle()
+{
+    let properTitle =
         window.location.toString()
             .replace(getUrlRoot(), "")
             .replace("_", " ")
@@ -119,12 +138,15 @@ function getPageTitle() {
 }
 
 /**
- * 
- * @param {*} text 
+ * getUrlRoot
  */
-function replaceByRule(text) {
+function getUrlRoot()
+{
+    let getUrl = window.location;
+    let baseUrl =
+        getUrl.protocol + "//" +
+        getUrl.host     + "/";
 
-    var replacedText = text;
-
-    return markdown.toHTML(text);
+    return baseUrl.toString();
 }
+
