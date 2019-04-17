@@ -31,6 +31,7 @@ function includeJs(filename, onload)
 {
     //source: https://stackoverflow.com/a/8139909/2320153
     let script = document.createElement('script');
+
     script.src = filename;
     script.type = 'text/javascript';
     script.onload = script.onreadystatechange = function() {
@@ -46,7 +47,31 @@ function includeJs(filename, onload)
     document.getElementsByTagName('head')[0].appendChild(script);
 }
 
+/*
+    loading schema:
 
+    includeJs(jquery, () => {
+        $(document).ready(includeJs(dep2, callback2));
+    })
+
+    callback2 = () => {
+        $(document).ready(includeJs(dep3, callbackX));
+    }
+
+    callbackX = () => {
+        $(document).ready(includeJs(depX, initialize));
+    }
+
+    what should be:
+
+    var depURL;
+
+    generalCallback = () => {
+        $(document).ready(includeJs(depURL, generalCallback));
+    }
+
+
+ */
 includeJs(conf.deps.jquery, () => {
     $(document).ready(includeJs(conf.deps.markdown, initialize));  
 });
