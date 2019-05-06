@@ -59,6 +59,7 @@ As of 2018-10-11, Sparatiro Modules are JS files containing functions used quite
 * A huge refactor on naming
 
 * Try to make an universal header without extra framework
-    * though I'd be fine with Vue
+
+* Merging design from "beta" branch as an optional display method
 
     

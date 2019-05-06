@@ -1,5 +1,15 @@
 {
-    "modulesRoot":  '__engine/modules',
+    "deps": {
+        "markdown": "./__engine/third-party/markdown-browser-0.6.0-beta1.min.js"
+    },
+    "html": {
+        "metadata": {
+            "name": {
+                "author":  "Zoltán 'Katamori' Schmidt"
+            }
+        }
+    },
+    "modulesRoot":  "__engine/modules",
     "modules": {
 
     }

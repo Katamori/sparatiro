@@ -1,83 +1,91 @@
 /**
- * CONFIGURATION
+ * Sadly, without this two files, initialization can't be started.
  */
-const conf = {
-    // dependencies
-    "deps": {
-        "jquery":   './__engine/third-party/jquery-3.3.1/jquery-3.3.1.min.js',
-        "markdown": './__engine/third-party/markdown-browser-0.6.0-beta1/markdown.min.js',
-    },
-    "html": {
-        "metadata": {
-            //"charset": "UTF-8",
-            "name": {
-                "author":  "Zoltán 'Katamori' Schmidt",
-            },
-        }
-    },
-    "modulesRoot":  '__engine/modules',
-    "modules": {
+const JQUERY_URL = './__engine/third-party/jquery-3.3.1.min.js';
+const CONFIG_URL = './__settings/config.json';
 
-    }
-};
+// this is going to be the configuration container
+var conf = {};
 
 /**
- * Loads jQuery and configured dependencies.
- * 
- * @param {*} filename 
- * @param {*} onload 
+ * EXECUTION
  */
-function includeJs(filename, onload)
-{
-    //source: https://stackoverflow.com/a/8139909/2320153
-    let script = document.createElement('script');
 
-    script.src = filename;
-    script.type = 'text/javascript';
-    script.onload = script.onreadystatechange = function() {
-        if (script.readyState 
-            && (script.readyState === 'complete' 
-                || script.readyState === 'loaded'
-            )
-        ) {
-            script.onreadystatechange = null;                                                  
-        }       
-        onload();
-    };
-    document.getElementsByTagName('head')[0].appendChild(script);
+includeJs(JQUERY_URL)                       // step 1: load jQuery
+.then(() => includeJSON(CONFIG_URL))        // step 2: load configfile with jQ
+.then((jsonData) => loadConfig(jsonData))   // step 3: fill config variable
+.then(() => includeJs(conf.deps.markdown))  // step 4: load Markdown parser
+.then(() => initialize());
+
+
+/**
+ * METHODS
+ */
+
+ /**
+  * 
+  * https://stackoverflow.com/a/8139909/2320153 [for the script tag creation]
+  * https://stackoverflow.com/a/22519785/2320153 [for the Promise refactoring]
+  * 
+  * @param {*} filename 
+  */
+function includeJs(filename) 
+{
+    let handler = (onload, onerror) => {
+        let script = document.createElement('script');
+
+        let onLoadWrapper = () => {
+            let state = script.readyState;
+
+            if (state === 'complete' || 'loaded') {
+                script.onreadystatechange = null;                                                  
+            }
+            
+            onload();
+        };
+
+        script.src     = filename;
+        script.type    = 'text/javascript';
+        script.onload  = onLoadWrapper;
+        script.onerror = onerror;
+
+        document.getElementsByTagName('head')[0].appendChild(script);
+    }
+
+    return new Promise(handler);
 }
 
-/*
-    loading schema:
-
-    includeJs(jquery, () => {
-        $(document).ready(includeJs(dep2, callback2));
-    })
-
-    callback2 = () => {
-        $(document).ready(includeJs(dep3, callbackX));
-    }
-
-    callbackX = () => {
-        $(document).ready(includeJs(depX, initialize));
-    }
-
-    what should be:
-
-    var depURL;
-
-    generalCallback = () => {
-        $(document).ready(includeJs(depURL, generalCallback));
-    }
-
-
+/**
+ * 
+ * @param {*} url 
  */
-includeJs(conf.deps.jquery, () => {
-    $(document).ready(includeJs(conf.deps.markdown, initialize));  
-});
+function includeJSON(url) 
+{
+    let handler = (ondone, reject) => {
+        // I admit it looks stupid for now but I may want to extend it later
+        $(document).ready($.getJSON(url, ondone));
+    }
+
+    return new Promise(handler);
+}
 
 /**
  * 
+ * @param {*} jsonVal 
+ */
+function loadConfig(jsonVal)
+{
+    let handler = (resolve, reject) => {
+        conf = jsonVal;
+
+        resolve();
+    }
+
+    return new Promise(handler);
+}
+
+/**
+ * initialize
  */
 function initialize()
 {
