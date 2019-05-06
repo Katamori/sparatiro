@@ -35,6 +35,7 @@ The article index file is `__settings/index.json` and you can use it by simply l
 
 For security and usability reasons, "unindexed" pages (HTML files with name not appearing in the index) won't be rendered by Sparatiro.
 
+
 ## Development
 
 ### Modules
@@ -44,22 +45,22 @@ As of 2018-10-11, Sparatiro Modules are JS files containing functions used quite
 # TO-DO
 
 * article index implementation
-    * load from JSON
     * interrupt init on unindexed articles
+        * utilize Promise rejects for that
     * colorize 404 URLs
-    * hardcode reserved names
     * implement reserved names
         * index display
         * random
         * wanted pages
-
-* config.json implementation
-    * load crucial data from it
+    * better 404
 
 * A huge refactor on naming
 
 * Try to make an universal header without extra framework
 
 * Merging design from "beta" branch as an optional display method
+
+* Abandon jQuery altogether
+    * is that even possible?
 
     

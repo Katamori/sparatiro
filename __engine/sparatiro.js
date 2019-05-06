@@ -4,17 +4,32 @@
 const JQUERY_URL = './__engine/third-party/jquery-3.3.1.min.js';
 const CONFIG_URL = './__settings/config.json';
 
-// this is going to be the configuration container
+// global variable containers
 var conf = {};
+var index = {};
 
 /**
  * EXECUTION
  */
+// load jQuery; then load configfile with it
+includeJs(JQUERY_URL)                       
+.then(() => includeJSON(CONFIG_URL))
+.then((jsonData) => new Promise((resolve, reject) => {
+    conf = jsonData;
+    resolve();
+}))
 
-includeJs(JQUERY_URL)                       // step 1: load jQuery
-.then(() => includeJSON(CONFIG_URL))        // step 2: load configfile with jQ
-.then((jsonData) => loadConfig(jsonData))   // step 3: fill config variable
-.then(() => includeJs(conf.deps.markdown))  // step 4: load Markdown parser
+// load index
+.then(() => includeJSON(conf.paths.index))
+.then((jsonData) => new Promise((resolve, reject) => {
+    index = jsonData;
+    resolve();
+}))
+
+// load Markdown parser
+.then(() => includeJs(conf.deps.markdown))  
+
+// initialize "render"
 .then(() => initialize());
 
 
@@ -88,10 +103,34 @@ function loadConfig(jsonVal)
  * initialize
  */
 function initialize()
-{
+{console.log(findArticle())
+    if (!findArticle()) {
+        //alert("Could not find this article in index!");
+        window.location = "/404.html";
+    }
+
     declareComputedGlobals(); // TODO: find a better way
     createHead();             // create HTML head
     createBody();             // create HTML body
+}
+
+function findArticle()
+{
+    let separated = getPageTitle().toLowerCase().split(" / ");
+
+    // if I could separate it, then it has a namespace
+    if (separated.length > 1) {
+        let titleNamespace = separated[0];
+        let title = separated[1];
+
+        return (index.namespace.hasOwnProperty(titleNamespace) && index.namespace[titleNamespace].includes(title))
+
+    // otherwise search in regular or reserved
+    } else {
+        let title = separated[0];
+
+        return (index.regular.includes(title) || index.reserved.includes(title))
+    }
 }
 
 /**

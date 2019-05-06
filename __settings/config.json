@@ -2,6 +2,9 @@
     "deps": {
         "markdown": "./__engine/third-party/markdown-browser-0.6.0-beta1.min.js"
     },
+    "paths": {
+        "index": "./__settings/index.json"
+    },
     "html": {
         "metadata": {
             "name": {
