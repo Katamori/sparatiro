@@ -189,6 +189,8 @@ function createArticleHeader()
 {
     bodyDom.append( "<div id='header'></div>" );
     $("#header").load(getUrlRoot() + 'engine/header.html');
+
+    console.log(getUrlRoot() + 'engine/header.html');
 }
 
 /**
@@ -237,6 +239,10 @@ function getPageTitle()
  */
 function getUrlRoot()
 {
-    return window.location.href;
+    let url = window.location.href.split("/");
+
+    url.pop();
+
+    return url.join("/") + "/";
 }
 

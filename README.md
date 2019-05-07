@@ -35,6 +35,7 @@ The article index file is `settings/index.json` and you can use it by simply lis
 
 For security and usability reasons, "unindexed" pages (HTML files with name not appearing in the index) won't be rendered by Sparatiro.
 
+**Important!** By its inherent nature, Sparatiro supports only top-level articles (`<your-access>/<article-name>`) and the only means of going deeper is namespaces. Every tool is built around the idea of it.
 
 ## Development
 
