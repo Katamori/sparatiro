@@ -188,9 +188,10 @@ function createBody()
 function createArticleHeader()
 {
     bodyDom.append( "<div id='header'></div>" );
-    $("#header").load(getUrlRoot() + 'engine/header.html');
 
     console.log(getUrlRoot() + 'engine/header.html');
+    
+    $("#header").load(getUrlRoot() + 'engine/header.html');
 }
 
 /**
