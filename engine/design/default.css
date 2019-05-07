@@ -1,3 +1,7 @@
+img {
+    width: 100%;
+}
+
 #content {
     max-width: 704px;
     margin: 0 auto 0;
