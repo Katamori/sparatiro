@@ -13,7 +13,7 @@ engine contains every underlying mechanics. Don't modify it if possible.
 
 The engine contains the following third-party scripts:
 
-* [jQuery 3.3.1](https://jquery.com/) - compressed
+* [jQuery 3.3.1](https://jquery.com/) - compressed; not self-hosted anymore
 
 * [MarkdownJS by Dominic "evilstreak" Baggott](https://github.com/evilstreak/markdown-js) - browser build
 
@@ -22,6 +22,16 @@ These are loaded on every article you visit.
 ## Simple pages
 
 Create an HTML file, but instead of the regular tags, include only `engine/sparatiro.js` with a `script` tag.
+
+### Difference from regular Markdown syntax
+
+Inner links are a thing: 
+`this [might be] it` => `this [might be](might_be) it`
+
+Inner links are also automatically given an extension:
+`just [a hero](a-hero) there` => `just [a hero](a-hero.html) there`
+
+This is important because articles can't be found without their extension.
 
 ## Namespaces
 
@@ -64,4 +74,6 @@ As of 2018-10-11, Sparatiro Modules are JS files containing functions used quite
 * Abandon jQuery altogether
     * is that even possible?
 
-    
+* hide unparsed content when JS codes aren't loaded yet
+
+* check out if it's worthy: https://github.com/linyouhappy/fast-markdown-js

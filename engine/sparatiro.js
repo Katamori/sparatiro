@@ -196,7 +196,20 @@ function createArticleHeader()
  */
 function createArticleContent()
 {
-    let formattedContent = markdown.toHTML(initText);
+    // pre-processing: Katamori-to-Markdown
+    let formattedContent = initText
+    .replace(
+        // self-referencing to valid link (https://stackoverflow.com/a/56030180/2320153)
+        /\[([^\[\]]*)\](?!\([^()]*\))/g,
+        m => `[${m.replace("[", "").replace("]", "")}](${stringToLink(m.replace("[", "").replace("]", ""))})`
+    ).replace(
+        // when an URL is assumed to be "inner", .html is added automatically
+        /\[([A-Za-z0-9 \.\:\-\_\~]+)\]\(([A-Za-z0-9 _~]+)\)/g,
+        "[$1]($2.html)"
+    )
+    
+    // the real deal
+    formattedContent = markdown.toHTML(formattedContent);
 
     bodyDom.append(
         "<div id='content'>" +
@@ -242,5 +255,18 @@ console.log(window.location.href);
     url.pop();
 
     return url.join("/") + "/";
+}
+
+/**
+ * stringToLink
+ * 
+ * @param {*} string 
+ */
+function stringToLink(string)
+{
+    return string
+        .replace(/ /g, "_")
+        .replace(/ \/ /g, "~")
+        .toLowerCase();
 }
 
