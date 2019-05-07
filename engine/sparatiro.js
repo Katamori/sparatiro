@@ -1,7 +1,7 @@
 /**
  * Sadly, without this two files, initialization can't be started.
  */
-const JQUERY_URL = './engine/third-party/jquery-3.3.1.min.js';
+const JQUERY_URL = 'https://code.jquery.com/jquery-3.3.1.min.js';
 const CONFIG_URL = './settings/config.json';
 
 // global variable containers
