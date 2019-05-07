@@ -1,0 +1,20 @@
+{
+    "deps": {
+        "markdown": "https://katamori.github.io/sparatiro/engine/third-party/markdown-browser-0.6.0-beta1.min.js"
+    },
+    "paths": {
+        "index": "./settings/index.json"
+    },
+    "wikiName": "Sparatiro demo",
+    "html": {
+        "metadata": {
+            "name": {
+                "author":  "Your name"
+            }
+        }
+    },
+    "modulesRoot":  "engine/modules",
+    "modules": {
+
+    }
+}
