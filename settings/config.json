@@ -5,6 +5,7 @@
     "paths": {
         "index": "./settings/index.json"
     },
+    "wikiName": "Sparatiro demo",
     "html": {
         "metadata": {
             "name": {

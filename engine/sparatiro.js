@@ -157,7 +157,7 @@ function createHead()
         metatags += "<meta name=\"" + key + "\" content=\"" + meta[key] + "\">\n";
     });
 
-    let title       = getPageTitle() + " | Sparatiro";
+    let title       = getPageTitle() + " | " + conf.wikiName;
 
     let titleTags   = "<title>"  +title + "</title>\n";
     let cssLink     = "<link rel='stylesheet' type='text/css' href='./engine/design/default.css'>";
@@ -188,10 +188,7 @@ function createBody()
 function createArticleHeader()
 {
     bodyDom.append( "<div id='header'></div>" );
-
-    console.log(getUrlRoot() + 'engine/header.html');
-
-    //$("#header").load(getUrlRoot() + 'engine/header.html');
+    $("#header").load(getUrlRoot() + 'engine/header.html');
 }
 
 /**
@@ -214,7 +211,7 @@ function createArticleContent()
 function createArticleFooter()
 {
     bodyDom.append( "<div id='footer'></div>" );
-    //$('#footer').load(getUrlRoot() + 'engine/footer.html');
+    $('#footer').load(getUrlRoot() + 'engine/footer.html');
 }
 
 /**
