@@ -106,7 +106,7 @@ function initialize()
 {console.log(findArticle())
     if (!findArticle()) {
         //alert("Could not find this article in index!");
-        window.location = "/404.html";
+        //window.location = "/404.html";
     }
 
     declareComputedGlobals(); // TODO: find a better way
@@ -219,12 +219,14 @@ function createArticleFooter()
  */
 function getPageTitle()
 {
-    let properTitle =
-        window.location.toString()
-            .replace(getUrlRoot(), "")
+    // get last part of the URL
+    let fileName = window.location.pathname.split("/").pop();
+
+    let properTitle = fileName.toString()
             .replace("_", " ")
             .replace("~", " / ")
-            .replace(".html", "");
+            .replace(".html", "")
+            .replace(/\b./g, m => m.toUpperCase()); // capitalize words
 
     // uppercase
     return properTitle[0].toUpperCase() + properTitle.slice(1);
