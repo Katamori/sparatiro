@@ -204,7 +204,7 @@ function createArticleContent()
         m => `[${m.replace("[", "").replace("]", "")}](${stringToLink(m.replace("[", "").replace("]", ""))})`
     ).replace(
         // when an URL is assumed to be "inner", .html is added automatically
-        /\[([A-Za-z0-9 \.\:\-\_\~]+)\]\(([A-Za-z0-9 _~]+)\)/g,
+        /\[([A-Za-z0-9 \.\:\-\_\~]+)\]\(([A-Za-z0-9 _-~]+)\)/g,
         "[$1]($2.html)"
     )
     
