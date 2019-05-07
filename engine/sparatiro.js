@@ -190,7 +190,7 @@ function createArticleHeader()
     bodyDom.append( "<div id='header'></div>" );
 
     console.log(getUrlRoot() + 'engine/header.html');
-    
+
     $("#header").load(getUrlRoot() + 'engine/header.html');
 }
 
@@ -241,7 +241,7 @@ function getPageTitle()
 function getUrlRoot()
 {
     let url = window.location.href.split("/");
-
+console.log(window.location.href);
     url.pop();
 
     return url.join("/") + "/";
