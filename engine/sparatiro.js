@@ -1,8 +1,8 @@
 /**
  * Sadly, without this two files, initialization can't be started.
  */
-const JQUERY_URL = './__engine/third-party/jquery-3.3.1.min.js';
-const CONFIG_URL = './__settings/config.json';
+const JQUERY_URL = './engine/third-party/jquery-3.3.1.min.js';
+const CONFIG_URL = './settings/config.json';
 
 // global variable containers
 var conf = {};
@@ -160,7 +160,7 @@ function createHead()
     let title       = getPageTitle() + " | Sparatiro";
 
     let titleTags   = "<title>"  +title + "</title>\n";
-    let cssLink     = "<link rel='stylesheet' type='text/css' href='./__engine/design/default.css'>";
+    let cssLink     = "<link rel='stylesheet' type='text/css' href='./engine/design/default.css'>";
 
     let htmlString =
         metatags
@@ -188,7 +188,7 @@ function createBody()
 function createArticleHeader()
 {
     bodyDom.append( "<div id='header'></div>" );
-    $("#header").load(getUrlRoot() + '__engine/header.html');
+    $("#header").load(getUrlRoot() + 'engine/header.html');
 }
 
 /**
@@ -211,7 +211,7 @@ function createArticleContent()
 function createArticleFooter()
 {
     bodyDom.append( "<div id='footer'></div>" );
-    $('#footer').load(getUrlRoot() + '__engine/footer.html');
+    $('#footer').load(getUrlRoot() + 'engine/footer.html');
 }
 
 /**

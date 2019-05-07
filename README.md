@@ -7,7 +7,7 @@ Under heavy development.
 
 # How to use
 
-__engine contains every underlying mechanics. Don't modify it if possible.
+engine contains every underlying mechanics. Don't modify it if possible.
 
 ## Dependencies
 
@@ -21,7 +21,7 @@ These are loaded on every article you visit.
 
 ## Simple pages
 
-Create an HTML file, but instead of the regular tags, include only `__engine/sparatiro.js` with a `script` tag.
+Create an HTML file, but instead of the regular tags, include only `engine/sparatiro.js` with a `script` tag.
 
 ## Namespaces
 
@@ -31,7 +31,7 @@ Namespaces are defined in the title (that is, the filename) separated by `~`.
 
 Since Sparatiro is backend-agnostic, the only way of implementing features involving search (e.g. wanted pages, content, what links here) is by maintaining a manual article index by yourself.	
 
-The article index file is `__settings/index.json` and you can use it by simply listing them as in the example.	
+The article index file is `settings/index.json` and you can use it by simply listing them as in the example.	
 
 For security and usability reasons, "unindexed" pages (HTML files with name not appearing in the index) won't be rendered by Sparatiro.
 

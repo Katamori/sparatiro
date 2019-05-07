@@ -1,9 +1,9 @@
 {
     "deps": {
-        "markdown": "./__engine/third-party/markdown-browser-0.6.0-beta1.min.js"
+        "markdown": "./engine/third-party/markdown-browser-0.6.0-beta1.min.js"
     },
     "paths": {
-        "index": "./__settings/index.json"
+        "index": "./settings/index.json"
     },
     "html": {
         "metadata": {
@@ -12,7 +12,7 @@
             }
         }
     },
-    "modulesRoot":  "__engine/modules",
+    "modulesRoot":  "engine/modules",
     "modules": {
 
     }
