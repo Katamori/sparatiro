@@ -191,7 +191,7 @@ function createArticleHeader()
 
     console.log(getUrlRoot() + 'engine/header.html');
 
-    $("#header").load(getUrlRoot() + 'engine/header.html');
+    //$("#header").load(getUrlRoot() + 'engine/header.html');
 }
 
 /**
@@ -214,7 +214,7 @@ function createArticleContent()
 function createArticleFooter()
 {
     bodyDom.append( "<div id='footer'></div>" );
-    $('#footer').load(getUrlRoot() + 'engine/footer.html');
+    //$('#footer').load(getUrlRoot() + 'engine/footer.html');
 }
 
 /**
