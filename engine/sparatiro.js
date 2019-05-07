@@ -237,6 +237,6 @@ function getPageTitle()
  */
 function getUrlRoot()
 {
-    return getUrl.href;
+    return window.location.href;
 }
 
