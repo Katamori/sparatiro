@@ -236,9 +236,9 @@ function getPageTitle()
     let fileName = window.location.pathname.split("/").pop();
 
     let properTitle = fileName.toString()
-            .replace("_", " ")
-            .replace("~", " / ")
-            .replace(".html", "")
+            .replace(/_/g, " ")
+            .replace(/~/g, " / ")
+            .replace(/.html/g, "")
             .replace(/\b./g, m => m.toUpperCase()); // capitalize words
 
     // uppercase
