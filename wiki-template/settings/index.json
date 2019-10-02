@@ -6,7 +6,8 @@
     },
     "reserved": [
         "404",
-        "wanted-pages",
-        "random-article"
+        "wanted_pages",
+		"random_article",
+		"toc"
     ]
 }

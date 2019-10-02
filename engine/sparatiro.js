@@ -8,6 +8,13 @@ const CONFIG_URL = './settings/config.json';
 var conf = {};
 var index = {};
 
+var reservedMap = {
+	"404.html": 			"Not found",
+	"wanted_pages.html":	"Wanted pages",
+	"random_article.html":	"Random article",
+	"toc.html":				"List of articles",
+}
+
 /**
  * EXECUTION
  */
@@ -105,8 +112,7 @@ function loadConfig(jsonVal)
 function initialize()
 {console.log(findArticle())
     if (!findArticle()) {
-        //alert("Could not find this article in index!");
-        //window.location = "/404.html";
+        window.location = "/404.html";
     }
 
     declareComputedGlobals(); // TODO: find a better way
@@ -129,7 +135,7 @@ function findArticle()
     } else {
         let title = separated[0];
 
-        return (index.regular.includes(title) || index.reserved.includes(title))
+        return (index.regular.includes(title) || index.reserved.includes(getFileNameNoExt()))
     }
 }
 
@@ -196,6 +202,19 @@ function createArticleHeader()
  */
 function createArticleContent()
 {
+	// handle system defaults
+	switch (getFileName()) {
+		//case "404.html":
+		//case "wanted_pages.html":
+		//case "random_artice.html":
+		case "toc.html":
+			initText = createToC();
+
+			break;
+		default:
+			break;
+	}
+
     // pre-processing: Katamori-to-Markdown
     let formattedContent = initText
     .replace(
@@ -219,6 +238,50 @@ function createArticleContent()
 }
 
 /**
+ * createToC
+ */
+function createToC()
+{
+	let result = "";
+
+	// for every article index element
+	Object.keys(index).forEach(key => {
+		// add a MD header
+		result += "## " + toUpperCaseFirst(key) + "\n";
+
+		// for each level 1 element
+		Object.values(index[key]).forEach(element => {
+			switch (key) {
+				// for "regular", produce a simple list
+				case "regular":
+					result += "* [" + toUpperCaseFirst(element) + "](" + element + ".html) \n"
+					break;
+				// for "reserved", refer to a name map
+				case "reserved":
+					result += "* [" + reservedMap[element + ".html"] + "](" + element + ".html) \n"
+
+					break;
+				// for "namespace", list level 2 elements too
+				case "namespace":
+					// namespace title
+					result += "### " + toUpperCaseFirst(key) + "\n";
+
+					// namespace elements
+					element.forEach(subelement => {
+						result += "* [" + toUpperCaseFirst(subelement) + "](" + subelement + ".html) \n"
+					})
+
+					break;
+				default:
+					break;
+			}
+		});
+	});
+
+	return result;
+}
+
+/**
  * createArticleFooter
  */
 function createArticleFooter()
@@ -229,11 +292,20 @@ function createArticleFooter()
 
 /**
  * getPageTitle
+ * 
+ * @param {*} fileName 
  */
-function getPageTitle()
+function getPageTitle(fileName = null)
 {
-    // get last part of the URL
-    let fileName = window.location.pathname.split("/").pop();
+	// get last part of the URL
+	if (fileName == null) {
+		fileName = getFileName();
+	}
+
+	// handle system defaults
+	if (Object.keys(reservedMap).includes(fileName)) {
+		return reservedMap[fileName];
+	}
 
     let properTitle = fileName.toString()
             .replace(/_/g, " ")
@@ -241,8 +313,24 @@ function getPageTitle()
             .replace(/.html/g, "")
             .replace(/\b./g, m => m.toUpperCase()); // capitalize words
 
-    // uppercase
-    return properTitle[0].toUpperCase() + properTitle.slice(1);
+	// uppercase
+	return toUpperCaseFirst(properTitle);
+}
+
+/**
+ * getFileName
+ */
+function getFileName()
+{
+	return window.location.pathname.split("/").pop();
+}
+
+/**
+ * getFileNameNoExt
+ */
+function getFileNameNoExt()
+{
+	return getFileName().replace(/.html/g, "");
 }
 
 /**
@@ -270,3 +358,12 @@ function stringToLink(string)
         .toLowerCase();
 }
 
+/**
+ * toUpperCaseFirst
+ * 
+ * @param {*} string 
+ */
+function toUpperCaseFirst(string)
+{
+	return string[0].toUpperCase() + string.slice(1);
+}

@@ -47,6 +47,10 @@ For security and usability reasons, "unindexed" pages (HTML files with name not 
 
 **Important!** By its inherent nature, Sparatiro supports only top-level articles (`<your-access>/<article-name>`) and the only means of going deeper is namespaces. Every tool is built around the idea of it.
 
+### Reserved names
+
+There are system-default filenames and titles; these are defined in `settings\index.json` and added to the global variable `reservedMap`. You're not allowed to create any articles using these names.
+
 ## Development
 
 ### Modules
@@ -77,3 +81,5 @@ As of 2018-10-11, Sparatiro Modules are JS files containing functions used quite
 * hide unparsed content when JS codes aren't loaded yet
 
 * check out if it's worthy: https://github.com/linyouhappy/fast-markdown-js
+
+* compatibility with backend so static rendered snapshots can be made
