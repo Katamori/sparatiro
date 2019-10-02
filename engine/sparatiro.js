@@ -277,7 +277,7 @@ function createToC()
 
 					// namespace elements
 					Object.values(namespaces[subkey]).forEach(subelement => {
-						result += "* [" + toUpperCaseFirst(subelement) + "](" + key + "~" + subelement + ".html) \n"
+						result += "* [" + toUpperCaseFirst(subelement) + "](" + subkey + "~" + subelement + ".html) \n"
 					})
 				}
 			}
