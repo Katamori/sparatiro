@@ -254,7 +254,7 @@ function createToC()
 			switch (key) {
 				// for "regular", produce a simple list
 				case "regular":
-					result += "* [" + toUpperCaseFirst(element) + "](" + element + ".html) \n"
+					result += "* [" + getPageTitle(element) + "](" + element + ".html) \n"
 					break;
 				// for "reserved", refer to a name map
 				case "reserved":
