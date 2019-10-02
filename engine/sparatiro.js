@@ -258,7 +258,7 @@ function createToC()
 					break;
 				// for "reserved", refer to a name map
 				case "reserved":
-					result += "* [" + reservedMap[element + ".html"] + "](" + key + "~" + element + ".html) \n"
+					result += "* [" + reservedMap[element + ".html"] + "]("+ element + ".html) \n"
 
 					break;
 				default:
@@ -277,7 +277,7 @@ function createToC()
 
 					// namespace elements
 					Object.values(namespaces[subkey]).forEach(subelement => {
-						result += "* [" + toUpperCaseFirst(subelement) + "](" + subelement + ".html) \n"
+						result += "* [" + toUpperCaseFirst(subelement) + "](" + key + "~" + subelement + ".html) \n"
 					})
 				}
 			}
