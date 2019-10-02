@@ -276,8 +276,6 @@ function createToC()
 					result += "### " + getPageTitle(subkey) + "\n";
 
 					// namespace elements
-					subkey = subkey.replace
-
 					Object.values(namespaces[subkey]).forEach(subelement => {
 						result += "* [" + toUpperCaseFirst(subelement) + "](" + stringToLink(subkey + "~" + subelement + ".html") + ") \n"
 					})
