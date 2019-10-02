@@ -263,14 +263,20 @@ function createToC()
 					break;
 				// for "namespace", list level 2 elements too
 				case "namespace":
-					// namespace title
-					result += "### " + toUpperCaseFirst(element) + "\n";
+					let namespaces = index[key];
 
-					// namespace elements
-					element.forEach(subelement => {
-						result += "* [" + toUpperCaseFirst(subelement) + "](" + subelement + ".html) \n"
-					})
+					for (var subkey in namespaces) {
+						if (namespaces.hasOwnProperty(subkey)) {
+							// namespace title
+							result += "### " + getPageTitle(subkey) + "\n";
 
+							// namespace elements
+							Object.values(namespaces[subkey]).forEach(subelement => {
+								result += "* [" + toUpperCaseFirst(subelement) + "](" + subelement + ".html) \n"
+							})
+						}
+					}
+					
 					break;
 				default:
 					break;
