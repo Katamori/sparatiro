@@ -258,7 +258,7 @@ function createToC()
 					break;
 				// for "reserved", refer to a name map
 				case "reserved":
-					result += "* [" + reservedMap[element + ".html"] + "](" + element + ".html) \n"
+					result += "* [" + reservedMap[element + ".html"] + "](" + key + "~" + element + ".html) \n"
 
 					break;
 				default:
