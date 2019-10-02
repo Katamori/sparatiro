@@ -264,7 +264,7 @@ function createToC()
 				// for "namespace", list level 2 elements too
 				case "namespace":
 					// namespace title
-					result += "### " + toUpperCaseFirst(key) + "\n";
+					result += "### " + toUpperCaseFirst(element) + "\n";
 
 					// namespace elements
 					element.forEach(subelement => {
