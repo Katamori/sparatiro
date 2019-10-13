@@ -122,7 +122,8 @@ function initialize()
 
 function findArticle()
 {
-    let separated = getPageTitle().toLowerCase().split(" / ");
+	let pageTitle = getPageTitle();
+    let separated = pageTitle.toLowerCase().split(" / ");
 
     // if I could separate it, then it has a namespace
     if (separated.length > 1) {
@@ -135,7 +136,7 @@ function findArticle()
     } else {
         let title = separated[0];
 
-        return (index.regular.includes(title) || index.reserved.includes(getFileNameNoExt()))
+        return (pageTitle === "" || index.regular.includes(title) || index.reserved.includes(getFileNameNoExt()))
     }
 }
 
@@ -254,11 +255,11 @@ function createToC()
 			switch (key) {
 				// for "regular", produce a simple list
 				case "regular":
-					result += "* [" + getPageTitle(element) + "](" + element + ".html) \n"
+					result += "* [" + getPageTitle(element) + "](" + stringToLink(element + ".html") + ")\n"
 					break;
 				// for "reserved", refer to a name map
 				case "reserved":
-					result += "* [" + reservedMap[element + ".html"] + "]("+ element + ".html) \n"
+					result += "* [" + reservedMap[element + ".html"] + "]("+ stringToLink(element + ".html") + ")\n"
 
 					break;
 				default:
@@ -306,6 +307,10 @@ function getPageTitle(fileName = null)
 	// get last part of the URL
 	if (fileName == null) {
 		fileName = getFileName();
+	}
+
+	if (fileName === "") {
+		return "Index";
 	}
 
 	// handle system defaults
@@ -371,5 +376,9 @@ function stringToLink(string)
  */
 function toUpperCaseFirst(string)
 {
+	if (string === "" || string === " ") {
+		return string;
+	}
+
 	return string[0].toUpperCase() + string.slice(1);
 }
