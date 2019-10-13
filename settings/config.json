@@ -9,8 +9,9 @@
     "html": {
         "metadata": {
             "name": {
-                "author":  "Zoltán 'Katamori' Schmidt"
-            }
+				"author":	"Zoltán 'Katamori' Schmidt",
+				"viewport": "width=device-width, initial-scale=1, shrink-to-fit=no"
+			}
         }
     },
     "modulesRoot":  "engine/modules",
