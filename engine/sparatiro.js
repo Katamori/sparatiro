@@ -71,20 +71,16 @@ function includeJs(filename)
     return new Promise((onload, onerror) => {
         let script = document.createElement('script');
 
-        let onLoadWrapper = () => {
-            let state = script.readyState;
-
-            if (state === 'complete' || 'loaded') {
+        script.src     = filename;
+        script.type    = 'text/javascript';
+        script.onerror = onerror;
+        script.onload  = () => {
+            if (script.readyState === 'complete' || 'loaded') {
                 script.onreadystatechange = null;                                                  
             }
             
             onload();
         };
-
-        script.src     = filename;
-        script.type    = 'text/javascript';
-        script.onload  = onLoadWrapper;
-        script.onerror = onerror;
 
         document.getElementsByTagName('head')[0].appendChild(script);
     });
@@ -132,8 +128,8 @@ function initialize()
         window.location = "/404.html";
     }
 
-    createHead();             // create HTML head
-    createBody();             // create HTML body
+    createHead(); // create HTML head
+    createBody(); // create HTML body
 
     bodyDom.removeAttribute("style");
 }
@@ -245,7 +241,7 @@ class Article {
         .replace(
             // self-referencing to valid link (https://stackoverflow.com/a/56030180/2320153)
             /\[([^\[\]]*)\](?!\([^()]*\))/g,
-            m => `[${m.replace("[", "").replace("]", "")}](${stringToLink(m.replace("[", "").replace("]", ""))})`
+            m => `[${m.replace("[", "").replace("]", "")}](${Util.stringToLink(m.replace("[", "").replace("]", ""))})`
         ).replace(
             // when an URL is assumed to be "inner", .html is added automatically
             /\[([A-Za-z0-9 \.\:\-\_\~]+)\]\(([A-Za-z0-9 _-~]+)\)/g,
@@ -291,11 +287,11 @@ function createToC()
 			switch (key) {
 				// for "regular", produce a simple list
 				case "regular":
-					result += "* [" + getPageTitle(element) + "](" + stringToLink(element + ".html") + ")\n"
+					result += "* [" + getPageTitle(element) + "](" +  Util.stringToLink(element + ".html") + ")\n"
 					break;
 				// for "reserved", refer to a name map
 				case "reserved":
-					result += "* [" + reservedMap[element + ".html"] + "]("+ stringToLink(element + ".html") + ")\n"
+					result += "* [" + reservedMap[element + ".html"] + "]("+  Util.stringToLink(element + ".html") + ")\n"
 
 					break;
 				default:
@@ -314,7 +310,7 @@ function createToC()
 
 					// namespace elements
 					Object.values(namespaces[subkey]).forEach(subelement => {
-						result += "* [" + Util.toUpperCaseFirst(subelement) + "](" + stringToLink(subkey + "~" + subelement + ".html") + ") \n"
+						result += "* [" + Util.toUpperCaseFirst(subelement) + "](" + Util.stringToLink(subkey + "~" + subelement + ".html") + ") \n"
 					})
 				}
 			}
