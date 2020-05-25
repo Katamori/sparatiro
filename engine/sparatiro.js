@@ -18,27 +18,46 @@ var reservedMap = {
 /**
  * EXECUTION
  */
-// load jQuery; then load configfile with it
+
+/*
+ * This one guarantees nobody can see unformatted markdown
+ * TODO: is there a better way?
+ */
+document.onreadystatechange = () => {
+    if (document.readyState === 'interactive')
+    {
+        document.querySelector("body").style = "visibility: hidden;";
+    }
+}
+
+window.onload = () => {
+    declareComputedGlobals() //TODO: find a better way
+    preload()
+    includeJs(JQUERY_URL)
 includeJs(JQUERY_URL)                       
-.then(() => includeJSON(CONFIG_URL))
-.then((jsonData) => new Promise((resolve, reject) => {
-    conf = jsonData;
-    resolve();
-}))
+    includeJs(JQUERY_URL)
+    // load jQuery; then load configfile with it
+    .then(() => includeJSON(CONFIG_URL))
+    .then((jsonData) => new Promise((resolve, reject) => {
+        conf = jsonData;
+        resolve();
+    }))
 
-// load index
-.then(() => includeJSON(conf.paths.index))
-.then((jsonData) => new Promise((resolve, reject) => {
-    index = jsonData;
-    resolve();
-}))
+    // load index
+    .then(() => includeJSON(conf.paths.index))
+    .then((jsonData) => new Promise((resolve, reject) => {
+        index = jsonData;
+        resolve();
+    }))
 
-// load Markdown parser
+    // load Markdown parser
+    .then(() => includeJs(conf.deps.markdown))  
 .then(() => includeJs(conf.deps.markdown))  
+    .then(() => includeJs(conf.deps.markdown))  
 
-// initialize "render"
-.then(() => initialize());
-
+    // initialize "render"
+    .then(() => initialize());
+}
 
 /**
  * METHODS
@@ -53,7 +72,7 @@ includeJs(JQUERY_URL)
   */
 function includeJs(filename) 
 {
-    let handler = (onload, onerror) => {
+    return new Promise((onload, onerror) => {
         let script = document.createElement('script');
 
         let onLoadWrapper = () => {
@@ -72,9 +91,7 @@ function includeJs(filename)
         script.onerror = onerror;
 
         document.getElementsByTagName('head')[0].appendChild(script);
-    }
-
-    return new Promise(handler);
+    });
 }
 
 /**
@@ -83,12 +100,10 @@ function includeJs(filename)
  */
 function includeJSON(url) 
 {
-    let handler = (ondone, reject) => {
+    return new Promise((ondone, reject) => {
         // I admit it looks stupid for now but I may want to extend it later
         $(document).ready($.getJSON(url, ondone));
-    }
-
-    return new Promise(handler);
+    });
 }
 
 /**
@@ -97,13 +112,19 @@ function includeJSON(url)
  */
 function loadConfig(jsonVal)
 {
-    let handler = (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         conf = jsonVal;
 
         resolve();
-    }
+    });
+}
 
-    return new Promise(handler);
+/**
+ * preload
+ */
+function preload()
+{
+    bodyDom.innerHTML = '<div style="visibility:visible;">Loading...</div>';
 }
 
 /**
@@ -115,7 +136,6 @@ function initialize()
         window.location = "/404.html";
     }
 
-    declareComputedGlobals(); // TODO: find a better way
     createHead();             // create HTML head
     createBody();             // create HTML body
 }
@@ -145,8 +165,8 @@ function findArticle()
  */
 function declareComputedGlobals()
 {
-    bodyDom = $("body");
-    initText = bodyDom.text();
+    bodyDom = document.getElementsByTagName('body')[0];
+    initText = bodyDom.innerHTML;
 }
 
 /**
@@ -182,19 +202,24 @@ function createHead()
  */
 function createBody()
 {
-    bodyDom.text("");
+    bodyDom.innerHTML = "";
 
     createArticleHeader();
     createArticleContent();
     createArticleFooter();
+
+    bodyDom.style = "visibility: visible;";
 }
 
 /**
  * createArticleHeader
  */
 function createArticleHeader()
-{
-    bodyDom.append( "<div id='header'></div>" );
+{    
+    bodyDom.insertAdjacentHTML(
+    "beforeend",  
+    "<div id='header'></div>");
+    
     $("#header").load(getUrlRoot() + 'engine/header.html');
 }
 
@@ -231,7 +256,9 @@ function createArticleContent()
     // the real deal
     formattedContent = markdown.toHTML(formattedContent);
 
-    bodyDom.append(
+
+    bodyDom.insertAdjacentHTML(
+        "beforeend",
         "<div id='content'>" +
         "<h1 id='title'>" + getPageTitle() + "</h1>" +
         formattedContent +
@@ -293,7 +320,7 @@ function createToC()
  */
 function createArticleFooter()
 {
-    bodyDom.append( "<div id='footer'></div>" );
+    bodyDom.insertAdjacentHTML('beforeend', "<div id='footer'></div>");
     $('#footer').load(getUrlRoot() + 'engine/footer.html');
 }
 
