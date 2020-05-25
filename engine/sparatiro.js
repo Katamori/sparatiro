@@ -196,14 +196,38 @@ class Article {
             let titleNamespace = separated[0];
             let title = separated[1];
     
-            return (index.namespace.hasOwnProperty(titleNamespace) && index.namespace[titleNamespace].includes(title))
-    
+            return this.findInNamespace(titleNamespace, title)
         // otherwise search in regular or reserved
         } else {
             let title = separated[0];
     
             return (pageTitle === "" || index.regular.includes(title) || index.reserved.includes(Url.getFileName(true)))
         }
+    }
+
+    /**
+     * findInNamespace
+     * 
+     * @param {*} articleNamespace 
+     * @param {*} articleTitle 
+     */
+    static findInNamespace(articleNamespace, articleTitle)
+    {
+        if (!this.findNamespace(articleNamespace)) {
+            return false;
+        }
+
+        return index.namespace[articleNamespace].includes(articleTitle);
+    }
+
+    /**
+     * findNamespace
+     * 
+     * @param {*} namespace 
+     */
+    static findNamespace(namespace)
+    {
+        return index.namespace.hasOwnProperty(namespace);
     }
 
     /**
