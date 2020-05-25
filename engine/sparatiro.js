@@ -34,8 +34,6 @@ window.onload = () => {
     declareComputedGlobals() //TODO: find a better way
     preload()
     includeJs(JQUERY_URL)
-includeJs(JQUERY_URL)                       
-    includeJs(JQUERY_URL)
     // load jQuery; then load configfile with it
     .then(() => includeJSON(CONFIG_URL))
     .then((jsonData) => new Promise((resolve, reject) => {
@@ -51,8 +49,6 @@ includeJs(JQUERY_URL)
     }))
 
     // load Markdown parser
-    .then(() => includeJs(conf.deps.markdown))  
-.then(() => includeJs(conf.deps.markdown))  
     .then(() => includeJs(conf.deps.markdown))  
 
     // initialize "render"
@@ -131,33 +127,15 @@ function preload()
  * initialize
  */
 function initialize()
-{console.log(findArticle())
-    if (!findArticle()) {
+{
+    if (!Article.find(getPageTitle())) {
         window.location = "/404.html";
     }
 
     createHead();             // create HTML head
     createBody();             // create HTML body
-}
 
-function findArticle()
-{
-	let pageTitle = getPageTitle();
-    let separated = pageTitle.toLowerCase().split(" / ");
-
-    // if I could separate it, then it has a namespace
-    if (separated.length > 1) {
-        let titleNamespace = separated[0];
-        let title = separated[1];
-
-        return (index.namespace.hasOwnProperty(titleNamespace) && index.namespace[titleNamespace].includes(title))
-
-    // otherwise search in regular or reserved
-    } else {
-        let title = separated[0];
-
-        return (pageTitle === "" || index.regular.includes(title) || index.reserved.includes(getFileNameNoExt()))
-    }
+    bodyDom.removeAttribute("style");
 }
 
 /**
@@ -204,65 +182,96 @@ function createBody()
 {
     bodyDom.innerHTML = "";
 
-    createArticleHeader();
-    createArticleContent();
-    createArticleFooter();
-
-    bodyDom.style = "visibility: visible;";
+    Article.createHeader();
+    Article.createContent();
+    Article.createFooter();
 }
 
-/**
- * createArticleHeader
- */
-function createArticleHeader()
-{    
-    bodyDom.insertAdjacentHTML(
-    "beforeend",  
-    "<div id='header'></div>");
+class Article {
+    /**
+     * find
+     */
+    static find(pageTitle)
+    {
+        let separated = pageTitle.toLowerCase().split(" / ");
     
-    $("#header").load(getUrlRoot() + 'engine/header.html');
-}
-
-/**
- * createArticleContent
- */
-function createArticleContent()
-{
-	// handle system defaults
-	switch (getFileName()) {
-		//case "404.html":
-		//case "wanted_pages.html":
-		//case "random_artice.html":
-		case "toc.html":
-			initText = createToC();
-
-			break;
-		default:
-			break;
-	}
-
-    // pre-processing: Katamori-to-Markdown
-    let formattedContent = initText
-    .replace(
-        // self-referencing to valid link (https://stackoverflow.com/a/56030180/2320153)
-        /\[([^\[\]]*)\](?!\([^()]*\))/g,
-        m => `[${m.replace("[", "").replace("]", "")}](${stringToLink(m.replace("[", "").replace("]", ""))})`
-    ).replace(
-        // when an URL is assumed to be "inner", .html is added automatically
-        /\[([A-Za-z0-9 \.\:\-\_\~]+)\]\(([A-Za-z0-9 _-~]+)\)/g,
-        "[$1]($2.html)"
-    )
+        // if I could separate it, then it has a namespace
+        if (separated.length > 1) {
+            let titleNamespace = separated[0];
+            let title = separated[1];
     
-    // the real deal
-    formattedContent = markdown.toHTML(formattedContent);
+            return (index.namespace.hasOwnProperty(titleNamespace) && index.namespace[titleNamespace].includes(title))
+    
+        // otherwise search in regular or reserved
+        } else {
+            let title = separated[0];
+    
+            return (pageTitle === "" || index.regular.includes(title) || index.reserved.includes(Url.getFileName(true)))
+        }
+    }
+
+    /**
+     * createHeader
+     */
+    static createHeader()
+    {    
+        bodyDom.insertAdjacentHTML(
+        "beforeend",  
+        "<div id='header'></div>");
+        
+        $("#header").load(Url.getRoot() + 'engine/header.html');
+    }
+
+    /**
+     * createContent
+     */
+    static createContent()
+    {
+        // handle system defaults
+        switch (Url.getFileName()) {
+            //case "404.html":
+            //case "wanted_pages.html":
+            //case "random_artice.html":
+            case "toc.html":
+                initText = createToC();
+
+                break;
+            default:
+                break;
+        }
+
+        // pre-processing: Katamori-to-Markdown
+        let formattedContent = initText
+        .replace(
+            // self-referencing to valid link (https://stackoverflow.com/a/56030180/2320153)
+            /\[([^\[\]]*)\](?!\([^()]*\))/g,
+            m => `[${m.replace("[", "").replace("]", "")}](${stringToLink(m.replace("[", "").replace("]", ""))})`
+        ).replace(
+            // when an URL is assumed to be "inner", .html is added automatically
+            /\[([A-Za-z0-9 \.\:\-\_\~]+)\]\(([A-Za-z0-9 _-~]+)\)/g,
+            "[$1]($2.html)"
+        )
+        
+        // the real deal
+        formattedContent = markdown.toHTML(formattedContent);
 
 
-    bodyDom.insertAdjacentHTML(
-        "beforeend",
-        "<div id='content'>" +
-        "<h1 id='title'>" + getPageTitle() + "</h1>" +
-        formattedContent +
-        "</div>");
+        bodyDom.insertAdjacentHTML(
+            "beforeend",
+            "<div id='content'>" +
+            "<h1 id='title'>" + getPageTitle() + "</h1>" +
+            formattedContent +
+            "</div>");
+    }
+
+    /**
+     * createFooter
+     */
+    static createFooter()
+    {
+        bodyDom.insertAdjacentHTML('beforeend', "<div id='footer'></div>");
+        $('#footer').load(Url.getRoot() + 'engine/footer.html');
+    }
 }
 
 /**
@@ -275,7 +284,7 @@ function createToC()
 	// for every article index element
 	Object.keys(index).forEach(key => {
 		// add a MD header
-		result += "## " + toUpperCaseFirst(key) + "\n";
+		result += "## " + Util.toUpperCaseFirst(key) + "\n";
 
 		// for each level 1 element
 		Object.values(index[key]).forEach(element => {
@@ -305,7 +314,7 @@ function createToC()
 
 					// namespace elements
 					Object.values(namespaces[subkey]).forEach(subelement => {
-						result += "* [" + toUpperCaseFirst(subelement) + "](" + stringToLink(subkey + "~" + subelement + ".html") + ") \n"
+						result += "* [" + Util.toUpperCaseFirst(subelement) + "](" + stringToLink(subkey + "~" + subelement + ".html") + ") \n"
 					})
 				}
 			}
@@ -313,15 +322,6 @@ function createToC()
 	});
 
 	return result;
-}
-
-/**
- * createArticleFooter
- */
-function createArticleFooter()
-{
-    bodyDom.insertAdjacentHTML('beforeend', "<div id='footer'></div>");
-    $('#footer').load(getUrlRoot() + 'engine/footer.html');
 }
 
 /**
@@ -333,7 +333,7 @@ function getPageTitle(fileName = null)
 {
 	// get last part of the URL
 	if (fileName == null) {
-		fileName = getFileName();
+		fileName = Url.getFileName();
 	}
 
 	if (fileName === "") {
@@ -352,60 +352,62 @@ function getPageTitle(fileName = null)
             .replace(/\b./g, m => m.toUpperCase()); // capitalize words
 
 	// uppercase
-	return toUpperCaseFirst(properTitle);
+	return Util.toUpperCaseFirst(properTitle);
 }
 
-/**
- * getFileName
- */
-function getFileName()
-{
-	return window.location.pathname.split("/").pop();
+class Url {
+    /**
+     * getFileName
+     */
+    static getFileName(noExtension = "false")
+    {
+        let fileName = window.location.pathname.split("/").pop();
+        
+        if (noExtension) {
+            return fileName.replace(/.html/g, "");
+        }
+
+        return fileName;
+    }
+
+    /**
+     * getRoot
+     */
+    static getRoot()
+    {
+        let url = window.location.href.split("/");
+
+        url.pop();
+
+        return url.join("/") + "/";
+    }
 }
 
-/**
- * getFileNameNoExt
- */
-function getFileNameNoExt()
-{
-	return getFileName().replace(/.html/g, "");
-}
+class Util {
+    /**
+     * stringToLink
+     * 
+     * @param {*} string 
+     */
+    static stringToLink(string)
+    {
+        return string
+            .replace(/ /g, "_")
+            .replace(/ \/ /g, "~")
+            .toLowerCase();
+    }
 
-/**
- * getUrlRoot
- */
-function getUrlRoot()
-{
-    let url = window.location.href.split("/");
-console.log(window.location.href);
-    url.pop();
+    /**
+     * toUpperCaseFirst
+     * 
+     * @param {*} string 
+     */
+    static toUpperCaseFirst(string)
+    {
+        if (string === "" || string === " ") {
+            return string;
+        }
 
-    return url.join("/") + "/";
-}
-
-/**
- * stringToLink
- * 
- * @param {*} string 
- */
-function stringToLink(string)
-{
-    return string
-        .replace(/ /g, "_")
-        .replace(/ \/ /g, "~")
-        .toLowerCase();
-}
-
-/**
- * toUpperCaseFirst
- * 
- * @param {*} string 
- */
-function toUpperCaseFirst(string)
-{
-	if (string === "" || string === " ") {
-		return string;
-	}
-
-	return string[0].toUpperCase() + string.slice(1);
+        return string[0].toUpperCase() + string.slice(1);
+    }
 }
