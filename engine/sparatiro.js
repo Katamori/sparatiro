@@ -226,9 +226,16 @@ class Article {
         // handle system defaults
         switch (Url.getFileName()) {
             //case "404.html":
-            //case "wanted_pages.html":
-            //case "random_artice.html":
-            case "toc.html":
+            // todo: find out if case 404 should be handled here
+            case "wanted_pages":
+                initText = "[TODO] list of 404'd article references. Good luck with that...";
+
+                break;
+            case "random_artice":
+                initText = "[TODO] Random article placeholder, then reload...";
+
+                break;
+            case "toc":
                 initText = createToC();
 
                 break;
