@@ -60,3 +60,15 @@ img {
     margin: 0 16px 0 16px;
     text-align: center;
 }
+
+/*
+todo: should we add custom color to every class
+
+a.article {
+    color: #009adc;  
+}
+*/
+
+a.new {
+    color: #b30000;
+}

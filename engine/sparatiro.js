@@ -282,6 +282,17 @@ class Article {
         // the real deal
         formattedContent = markdown.toHTML(formattedContent);
 
+        // append class "new" to article URLs that don't exist
+        formattedContent = formattedContent.replace(
+            /a href=["']([A-Za-z~_]*)\.html["']/g,
+            (m, p1) => {
+                if (!Article.find(p1)) {
+                    // todo: use this part of the code to list wanted articles
+                    return m + 'class="new"';
+                }
+
+                return m;
+            });
 
         bodyDom.insertAdjacentHTML(
             "beforeend",
