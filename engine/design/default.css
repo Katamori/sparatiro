@@ -2,9 +2,25 @@ html {
     background-color: #28292a !important;
 }
 
+body {
+    margin: 16px;
+}
+
 body, input, textarea, select, button {
     border-color: #5d5d5d;
     color: #d8d7d4;
+}
+
+h1 {
+    border-bottom: solid #5d5d5d 3px;
+}
+
+h2 {
+    border-bottom: dashed #5d5d5d 2px;
+}
+
+h3 {
+    border-bottom: dashed #383838 1px;
 }
 
 img {
@@ -17,15 +33,17 @@ img {
 }
 
 #title {
-    border-bottom: solid 1px;
+    border-bottom: solid 3px;
 }
 
 .header {
-    border-bottom: solid 1px;
+    padding-bottom: 8px;
+    border-bottom: solid #5d5d5d 4px;
 }
 
 .footer {
-    border-top: solid 1px;
+    padding-top: 8px;
+    border-top: solid #5d5d5d 4px;
 }
 
 .header ul,
