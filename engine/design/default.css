@@ -1,3 +1,12 @@
+html {
+    background-color: #28292a !important;
+}
+
+body, input, textarea, select, button {
+    border-color: #5d5d5d;
+    color: #d8d7d4;
+}
+
 img {
     width: 100%;
 }
