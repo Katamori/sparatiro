@@ -125,7 +125,7 @@ function preload()
 function initialize()
 {
     if (!Article.find(getPageTitle())) {
-        window.location = "/404.html";
+        window.location = "404.html";
     }
 
     createHead(); // create HTML head
@@ -201,7 +201,10 @@ class Article {
         } else {
             let title = separated[0];
     
-            return (pageTitle === "" || index.regular.includes(title) || index.reserved.includes(Url.getFileName(true)))
+            return (
+                pageTitle === "" 
+                || index.regular.includes(title) 
+                || index.reserved.includes(Url.getFileName(true)))
         }
     }
 
@@ -256,6 +259,10 @@ class Article {
 
                 break;
             case "random_artice":
+                // 1: random number for namespace (0 is default)
+                // 2: random number for article
+                // redir to specified
+
                 initText = "[TODO] Random article placeholder, then reload...";
 
                 break;
@@ -286,7 +293,9 @@ class Article {
         formattedContent = formattedContent.replace(
             /a href=["']([A-Za-z~_]*)\.html["']/g,
             (m, p1) => {
-                if (!Article.find(p1)) {
+                console.log("i: "+p1)
+                if (!Article.find(getPageTitle(p1))) {
+                    console.log("no: "+getPageTitle(p1))
                     // todo: use this part of the code to list wanted articles
                     return m + 'class="new"';
                 }
