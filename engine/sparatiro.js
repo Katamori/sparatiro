@@ -5,10 +5,10 @@ const JQUERY_URL = 'https://code.jquery.com/jquery-3.3.1.min.js';
 const CONFIG_URL = './settings/config.json';
 
 // global variable containers
-var conf = {};
-var index = {};
+let conf = {};
+let index = {};
 
-var reservedMap = {
+let reservedMap = {
 	"404.html": 			"Not found",
 	"wanted_pages.html":	"Wanted pages",
 	"random_article.html":	"Random article",
@@ -31,28 +31,16 @@ document.onreadystatechange = () => {
 }
 
 window.onload = () => {
-    declareComputedGlobals() //TODO: find a better way
-    preload()
+    Bootstrap.preload()
+
+
     includeJs(JQUERY_URL)
-    // load jQuery; then load configfile with it
-    .then(() => includeJSON(CONFIG_URL))
-    .then((jsonData) => new Promise((resolve, reject) => {
-        conf = jsonData;
-        resolve();
-    }))
-
-    // load index
-    .then(() => includeJSON(conf.paths.index))
-    .then((jsonData) => new Promise((resolve, reject) => {
-        index = jsonData;
-        resolve();
-    }))
-
-    // load Markdown parser
-    .then(() => includeJs(conf.deps.markdown))  
-
-    // initialize "render"
-    .then(() => initialize());
+    .then(() => includeJSON(CONFIG_URL))  // load jQuery; then load configfile with it
+    .then(loadConfig)
+    .then(() => includeJSON(conf.paths.index))  // load index
+    .then(loadIndex)
+    .then(() => includeJs(conf.deps.markdown))  // load Markdown parser
+    .then(() => Bootstrap.initialize());  // initialize "render"
 }
 
 /**
@@ -112,26 +100,16 @@ function loadConfig(jsonVal)
 }
 
 /**
- * preload
+ *
+ * @param {*} jsonVal
  */
-function preload()
+function loadIndex(jsonVal)
 {
-    bodyDom.innerHTML = '<div style="visibility:visible;">Loading...</div>';
-}
+    return new Promise((resolve, reject) => {
+        index = jsonVal;
 
-/**
- * initialize
- */
-function initialize()
-{
-    if (!Article.find(getPageTitle())) {
-        window.location = "404.html";
-    }
-
-    createHead(); // create HTML head
-    createBody(); // create HTML body
-
-    bodyDom.removeAttribute("style");
+        resolve();
+    });
 }
 
 /**
@@ -143,47 +121,76 @@ function declareComputedGlobals()
     initText = bodyDom.innerHTML;
 }
 
-/**
- * createHead
- */
-function createHead()
-{
-    let metatags = "";
+class Bootstrap {
 
-    // generate meta tags; source: https://stackoverflow.com/a/7242062/2320153
-    // It is worth noting, that "There is no way to stop or break a forEach() loop other than by throwing an exception
-    let meta = conf.html.metadata.name;
+    /**
+     * preload
+     */
+    static preload()
+    {
+        declareComputedGlobals()
 
-    Object.keys(meta).forEach((key) => {
-        metatags += "<meta name=\"" + key + "\" content=\"" + meta[key] + "\">\n";
-    });
+        bodyDom.innerHTML = '<div style="visibility:visible;">Loading...</div>';
+    }
 
-    let title       = getPageTitle() + " | " + conf.wikiName;
+    /**
+     * initialize
+     */
+    static initialize()
+    {
+        if (!Article.find(getPageTitle())) {
+            window.location = "404.html";
+        }
 
-    let titleTags   = "<title>"  +title + "</title>\n";
-    let cssLink     = "<link rel='stylesheet' type='text/css' href='./engine/design/default.css'>";
+        Bootstrap.createHead(); // create HTML head
+        Bootstrap.createBody(); // create HTML body
 
-    let htmlString =
-        metatags
-        + titleTags
-        + cssLink;
+        bodyDom.removeAttribute("style");
+    }
 
-    $("head").append(htmlString);
-}
+    /**
+     * createHead
+     */
+    static createHead()
+    {
+        let metatags = "";
 
-/**
- * createBody
- */
-function createBody()
-{
-    bodyDom.innerHTML = "";
+        // generate meta tags; source: https://stackoverflow.com/a/7242062/2320153
+        // It is worth noting, that "There is no way to stop or break a forEach() loop other than by throwing an exception
+        let meta = conf.html.metadata.name;
 
-    Article.createHeader();
-    Article.createContent();
-    Article.createFooter();
+        Object.keys(meta).forEach((key) => {
+            metatags += "<meta name=\"" + key + "\" content=\"" + meta[key] + "\">\n";
+        });
+
+        let title       = getPageTitle() + " | " + conf.wikiName;
+
+        let titleTags   = "<title>"  +title + "</title>\n";
+        let cssLink     = "<link rel='stylesheet' type='text/css' href='./engine/design/default.css'>";
+
+        let htmlString =
+            metatags
+            + titleTags
+            + cssLink;
+
+        $("head").append(htmlString);
+    }
+
+    /**
+     * createBody
+     */
+    static createBody()
+    {
+        bodyDom.innerHTML = "";
+
+        Article.createHeader();
+        Article.createContent();
+        Article.createFooter();
+    }
 }
 
 class Article {
+    static initText;
     /**
      * find
      */
@@ -255,7 +262,7 @@ class Article {
             //case "404.html":
             // todo: find out if case 404 should be handled here
             case "wanted_pages":
-                initText = "[TODO] list of 404'd article references. Good luck with that...";
+                this.initText = "[TODO] list of 404'd article references. Good luck with that...";
 
                 break;
             case "random_artice":
